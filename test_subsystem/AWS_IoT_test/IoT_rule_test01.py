@@ -2,17 +2,25 @@ import json
 import time
 import paho.mqtt.client as mqtt
 
+# jsonファイルを読み込み
+with open("../../private/private.json", "r") as f:
+    config = json.load(f)
+
+print(config)
+print(config["AWS"]["IoT_Endpoint"])
+
 # AWS IoT のエンドポイントとトピック
-AWS_IOT_ENDPOINT = "a1ksbsp9zvccrn-ats.iot.ap-northeast-1.amazonaws.com"
+AWS_IOT_ENDPOINT = config["AWS"]["IoT_Endpoint"]
+
 MQTT_TOPIC = "test01/data"
 
 # MQTT クライアントの設定
 client = mqtt.Client(client_id="Dev-001", clean_session=False)
 #client.tls_set("AmazonRootCA1.pem", "certificate.pem.crt", "private.pem.key")
 
-root_CA = "../AmazonRootCA1.pem"
-crt = "../06c55f27cba59a18900b8873a114763a3defa9a7fe3108e06d70f3ddd29f2808-certificate.pem.crt"
-key = "../06c55f27cba59a18900b8873a114763a3defa9a7fe3108e06d70f3ddd29f2808-private.pem.key"
+root_CA = config["AWS"]["root_CA"]
+crt = config["AWS"]["crt"]
+key = config["AWS"]["key"]
 
 client.tls_set(root_CA, crt, key)
 print(client.connect(AWS_IOT_ENDPOINT, 8883, 60))
