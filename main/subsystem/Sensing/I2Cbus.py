@@ -2,7 +2,11 @@ import smbus2
 import time
 import json
 
-import I2Cdev.INA228 as INA228
+from .I2Cdev import INA228
+
+#親プロセスからのリクエスト
+GET_POWER_USE = "get_power_use"
+GET_POWER_SUPPLY = "get_power_supply"
 
 #I2Cアドレス
 POWER_USE_ADDR = 0x4a
@@ -22,13 +26,15 @@ def get_power_info(dev):
     }
 
 
-#データの受け皿
-payload = {}
+if __name__ == "__main__":
+    print("I2C.py is running.")
+    #データの受け皿
+    payload = {}
 
-while True:
+    while True:
 
-    payload["Power_use"] = get_power_info(Power_use)
-    #payload["Power_supply"] = get_power_info(Power_supply)
-    print(payload)
-    time.sleep(1)
+        payload["Power_use"] = get_power_info(Power_use)
+        #payload["Power_supply"] = get_power_info(Power_supply)
+        print(payload)
+        time.sleep(1)
 

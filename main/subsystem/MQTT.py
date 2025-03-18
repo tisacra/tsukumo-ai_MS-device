@@ -31,8 +31,8 @@ def setup_mqtt(project_dir):
 def mqtt_send(mqtt_topic, payload):
     payload["timestamp"] = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
     rc, mid = client.publish(mqtt_topic, json.dumps(payload))
-    print(rc, ", ", mid)
-    print("Data sent:", payload)
+    #print(rc, ", ", mid)
+    #print("Data sent:", payload)
     pass
 
 
