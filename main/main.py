@@ -40,7 +40,18 @@ for p in processes:
     p.deamon = True
     p.start()
 
-
+#サブシステムの準備完了待ち
+S_flag = 0
+M_flag = 0
+while True:
+    Ssig = Sense_parent_conn.recv()
+    Msig = Monitor_parent_conn.recv()
+    if Ssig == "S1":
+        S_flag = 1
+    if Msig == "M1":
+        M_flag = 1
+    if S_flag == 1 and M_flag == 1:
+        break
 
 #定期処理用タイマを設定
 def scheduler(arg1, arg2):
@@ -52,13 +63,15 @@ def scheduler(arg1, arg2):
     p_frame["Monitor"] = data
 
     #センシングデータの取得
-    Sense_parent_conn.send(Sense.GET_SOIL_INFO)
-    data = Sense_parent_conn.recv()
-    p_frame["Sensor"] = data
+    #Sense_parent_conn.send(Sense.GET_SOIL_INFO)
+    #data = Sense_parent_conn.recv()
+    #p_frame["Sensor"] = data
 
     #電力情報の取得
-    Sense_parent_conn.send(I2Cbus.GET_POWER_USE)
+    Sense_parent_conn.send((I2Cbus.GET_POWER_USE, I2Cbus.GET_POWER_GEN))
     data = Sense_parent_conn.recv()
+    #Sense_parent_conn.send(I2Cbus.GET_POWER_GEN)
+    #data2 = Sense_parent_conn.recv()
     p_frame["Device"]["Power"] = data
 
     print("Data sent:", p_frame)
@@ -70,6 +83,8 @@ print("Main.py is running.")
 
 signal.signal(signal.SIGALRM, scheduler)
 signal.setitimer(signal.ITIMER_REAL, 5, log_interval)
+
+print("subsystems start.")
 start_event.set()
 
 while True:

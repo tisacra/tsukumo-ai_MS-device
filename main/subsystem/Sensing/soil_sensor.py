@@ -48,7 +48,7 @@ def get_soil_info():
                                         ph = (Data[9] * 256 + Data[10]) / 10.0
                                         flag = False
         ser.reset_input_buffer()
-        return {"Tem [°C]": tem, "Hum [%RH]": hum, "EC [us/cm]": ec, "PH": ph}
+        return {"Tem [degC]": tem, "Hum [%RH]": hum, "EC [us/cm]": ec, "PH": ph}
 
 def CRC16_2(buf):
     crc = 0xFFFF
@@ -66,7 +66,7 @@ def loop():
     while True:
         get_soil_info()
         #print(f"TEM = {tem:.1f} °C  HUM = {hum:.1f} %RH  EC = {ec} us/cm  PH = {ph:.1f}")
-        print(f"TEM = {tem:.1f} °C  HUM = {hum:.1f} %RH  EC = {ec} us/cm  PH = {ph:.1f}")
+        print(f"TEM = {tem:.1f} degC  HUM = {hum:.1f} %RH  EC = {ec} us/cm  PH = {ph:.1f}")
         time.sleep(1)
 
 if __name__ == "__main__":

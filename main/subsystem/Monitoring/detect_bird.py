@@ -63,9 +63,12 @@ def accumulation(list):
                 accumulative_rec[rec["common_name"]] += rec["confidence"]
 
 def start_analyze(conn = None, start_event = None):
+    if start_event is not None:
+        print("birdNET analyze waiting...")
+        start_event.wait()
+    print("birdNET analyze start.")
+    
     while True:
-        if start_event is not None:
-            start_event.wait()
         if conn is not None:
             request = conn.recv()
             if request == GET_ACCUMULATIVE_REC:

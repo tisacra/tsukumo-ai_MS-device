@@ -31,11 +31,16 @@ def Monitoring(conn, start_event):
     p_birdNET = Process(target=detect_bird.start_analyze, args=(birdnet_child_conn, birdnet_start_event))
     p_birdNET.deamon = True
     p_birdNET.start()
+
+    print("Monitoring system is ready...")
+    conn.send("M1")
     start_event.wait()
-    
+
+    print("Monitoring system start.")
 
     signal.signal(signal.SIGALRM, listen)
     signal.setitimer(signal.ITIMER_REAL, 0.5, 0.5)
+    print("Starting birdNET analysis...")
     birdnet_start_event.set()
     
     
