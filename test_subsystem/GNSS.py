@@ -5,7 +5,7 @@ port = '/dev/ttyAMA2'
 bps = 115200
 timeout = 1
 
-def setup():
+def GNSS_setup():
     global ser
     try:
         ser = serial.Serial(port, bps, timeout=timeout)
@@ -19,7 +19,7 @@ def setup():
     ser.write("AT+UGGGA=1\r\n".encode())
     time.sleep(2)  # GNSS起動後、位置情報が取得可能になるまで待機
 
-def get_gnss_info():
+def get_GNSS_info():
     """
     指定のシリアルポートを通して、GNSS情報取得用のATコマンドを送信し、その応答を返す関数。
     
@@ -39,8 +39,8 @@ def get_gnss_info():
     
 
 if __name__ == '__main__':
-    setup()
-    gnss_data = get_gnss_info()
+    GNSS_setup()
+    gnss_data = get_GNSS_info()
     if gnss_data:
         print("取得した GNSS 情報:")
         print(gnss_data)

@@ -26,6 +26,7 @@ stream = None
 
 def setup():
     global analyzer, stream
+    print("Audio setup start...")
     p = pyaudio.PyAudio()
     stream = p.open(format=pyaudio.paInt16,     #データの型
                     channels=1,     #ステレオかモノラルかの選択 1でモノラル 2でステレオ
@@ -33,10 +34,21 @@ def setup():
                     input=True,
                     input_device_index = 4,     #マイクの指定
                     frames_per_buffer=BUF)    #データ数
-
+    
+    print(" - Audio setup done.")
+    
     if analyzer is None:
+        print("BirdNET-Analyzer setup start...")
         analyzer = Analyzer()
 
+        print(" - BirdNET-Analyzer setup done.")
+    
+
+
+def close():
+    global stream
+    stream.stop_stream()
+    stream.close()
 
 def get_bird_record(arg1=None, arg2=None):
     global accumulative_rec
