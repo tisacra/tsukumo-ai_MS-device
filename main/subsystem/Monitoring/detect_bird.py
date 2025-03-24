@@ -39,6 +39,7 @@ def setup():
     
     if analyzer is None:
         print("BirdNET-Analyzer setup start...")
+        
         analyzer = Analyzer()
 
         print(" - BirdNET-Analyzer setup done.")
@@ -49,6 +50,7 @@ def close():
     global stream
     stream.stop_stream()
     stream.close()
+    print(" - Audio closed.")
 
 def get_bird_record(arg1=None, arg2=None):
     global accumulative_rec

@@ -11,7 +11,7 @@ import subsystem.Monitoring.Monitor as Monitor
 
 
 project_dir = "../"
-log_interval = 10 #[s]
+log_interval = 30 #[s]
 
 # SIGINT受信用のフラグ
 terminate_flag = Event()
@@ -75,9 +75,9 @@ def scheduler(arg1, arg2):
     #集計などの処理
 
     #モニタリングデータの取得
-    #Monitor_parent_conn.send(Monitor.GET_BIRD_REC)
-    #data = Monitor_parent_conn.recv()
-    #p_frame["Monitor"] = data
+    Monitor_parent_conn.send(Monitor.GET_BIRD_REC)
+    data = Monitor_parent_conn.recv()
+    p_frame["Monitor"] = data
 
     #センシングデータの取得
     #Sense_parent_conn.send(Sense.GET_SOIL_INFO)
@@ -85,19 +85,19 @@ def scheduler(arg1, arg2):
     #p_frame["Sensor"] = data
 
     #電力情報の取得
-    #Sense_parent_conn.send((I2Cbus.GET_POWER_USE, I2Cbus.GET_POWER_GEN))
-    #data = Sense_parent_conn.recv()
-    #Sense_parent_conn.send(I2Cbus.GET_POWER_GEN)
-    #data2 = Sense_parent_conn.recv()
-    #p_frame["Device"]["Power"] = data
+    Sense_parent_conn.send((I2Cbus.GET_POWER_USE, I2Cbus.GET_POWER_GEN))
+    data = Sense_parent_conn.recv()
+    Sense_parent_conn.send(I2Cbus.GET_POWER_GEN)
+    data2 = Sense_parent_conn.recv()
+    p_frame["Device"]["Power"] = data
 
     #GNSS情報の取得
-    data = sara.get_GNSS_info()
-    p_frame["Device"]["GNSS"] = data
+    #data = sara.get_GNSS_info()
+    #p_frame["Device"]["GNSS"] = data
 
     print("Data sent:", p_frame)
     #MQTT.mqtt_send(MQTT_TOPIC, p_frame)
-    sara.send_message(MQTT_TOPIC, p_frame)
+    sara.MQTT_send(MQTT_TOPIC, p_frame)
 
 
 #メインループ開始
@@ -115,13 +115,18 @@ print("[親] 親プロセスのメインループ開始。Ctrl+Cで終了シグ�
 print("subsystems start.")
 start_event.set()
 
-try:
-    while not terminate_flag.is_set():
-        # 親プロセスのメイン処理（例: ループ内で何かの作業）
-        pass
+while not terminate_flag.is_set():
+    # 親プロセスのメイン処理（例: ループ内で何かの作業）
+    print("[親] メインループ中...")
+    time.sleep(5)  # 何かの処理を模した sleep
+    pass 
 
-finally:
-    print("[親] 親プロセス: 子プロセスの終了を待機します")
-    for p in processes:
-        p.join()
-    print("[親] 全ての処理が終了しました")
+# タイマーを無効化
+signal.setitimer(signal.ITIMER_REAL, 0)
+# SIGALRM のシグナルハンドラを無視に変更
+signal.signal(signal.SIGALRM, signal.SIG_IGN)
+
+print("[親] 親プロセス: 子プロセスの終了を待機します")
+for p in processes:
+    p.join()
+print("[親] 全ての処理が終了しました")

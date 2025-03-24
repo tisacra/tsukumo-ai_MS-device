@@ -41,13 +41,17 @@ def Monitoring(conn, start_event):
     print(" - Monitoring system start.")
 
     signal.signal(signal.SIGALRM, listen)
-    signal.setitimer(signal.ITIMER_REAL, 0.5, 0.5)
+    signal.setitimer(signal.ITIMER_REAL, 2, 2)
     print("Starting birdNET analysis...")
     birdnet_start_event.set()
     
     while True:
         request = conn.recv()
         if request == "terminate":
+            # タイマーを無効化
+            signal.setitimer(signal.ITIMER_REAL, 0)
+            # SIGALRM のシグナルハンドラを無視に変更
+            signal.signal(signal.SIGALRM, signal.SIG_IGN)
             detect_bird.close()
             p_birdNET.terminate()
             break
