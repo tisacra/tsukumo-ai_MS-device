@@ -7,7 +7,7 @@ GET_SOIL_INFO = "get_soil_info"
 
 
 def Sensing(conn, start_event):
-    #soil_sensor.setup()
+    soil_sensor.setup()
 
     print(" - Sensing system is ready...")
     conn.send("S1")

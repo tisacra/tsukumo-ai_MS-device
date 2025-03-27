@@ -182,7 +182,8 @@ def MQTT_send(topic, message):
     message["timestamp"] = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
     if debug is True:
         print(len(json.dumps(message)))
-    tmp = json.dumps(message).encode(ascii)
+    tmp = json.dumps(message)
+    print(tmp)
     send_message(topic, tmp)
 
 def send_message(topic, message):

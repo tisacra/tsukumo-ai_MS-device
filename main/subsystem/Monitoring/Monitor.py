@@ -35,7 +35,7 @@ def Monitoring(conn, start_event):
     p_birdNET.start()
 
     print(" - Monitoring system is ready...")
-    conn.send("M1")
+    Conn.send("M1")
     start_event.wait()
 
     print(" - Monitoring system start.")
@@ -46,7 +46,7 @@ def Monitoring(conn, start_event):
     birdnet_start_event.set()
     
     while True:
-        request = conn.recv()
+        request = Conn.recv()
         if request == "terminate":
             # タイマーを無効化
             signal.setitimer(signal.ITIMER_REAL, 0)

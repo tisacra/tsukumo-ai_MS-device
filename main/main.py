@@ -3,7 +3,6 @@ import signal
 import time
 from multiprocessing import Process, Event, Queue, Pipe
 
-import subsystem.MQTT as MQTT
 import subsystem.SARA_R5 as sara
 import subsystem.Sensing.Sense as Sense
 import subsystem.Sensing.I2Cbus as I2Cbus
@@ -33,7 +32,8 @@ sara.GNSS_setup()
 MQTT_TOPIC = "test01/data"
 
 #データ骨子の読み込み
-with open("packet_frame.json", "r") as f:
+dir = project_dir + "main/"
+with open(dir+"packet_frame.json", "r") as f:
     p_frame = json.load(f)
 
 #イベント、キューの準備
@@ -80,20 +80,21 @@ def scheduler(arg1, arg2):
     p_frame["Monitor"] = data
 
     #センシングデータの取得
-    #Sense_parent_conn.send(Sense.GET_SOIL_INFO)
-    #data = Sense_parent_conn.recv()
-    #p_frame["Sensor"] = data
+    if False:
+        Sense_parent_conn.send(Sense.GET_SOIL_INFO)
+        data = Sense_parent_conn.recv()
+        p_frame["Sensor"] = data
 
     #電力情報の取得
-    Sense_parent_conn.send((I2Cbus.GET_POWER_USE, I2Cbus.GET_POWER_GEN))
-    data = Sense_parent_conn.recv()
-    Sense_parent_conn.send(I2Cbus.GET_POWER_GEN)
-    data2 = Sense_parent_conn.recv()
-    p_frame["Device"]["Power"] = data
+    if True:
+        Sense_parent_conn.send((I2Cbus.GET_POWER_USE, I2Cbus.GET_POWER_GEN))
+        data = Sense_parent_conn.recv()
+        p_frame["Device"]["Power"] = data
 
     #GNSS情報の取得
-    #data = sara.get_GNSS_info()
-    #p_frame["Device"]["GNSS"] = data
+    if False:
+        data = sara.get_GNSS_info()
+        p_frame["Device"]["GNSS"] = data
 
     print("Data sent:", p_frame)
     #MQTT.mqtt_send(MQTT_TOPIC, p_frame)
